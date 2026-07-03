@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Personvern & GDPR – Instabank opplæring</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #00FF87;
+    --green-dim: #00CC6A;
+    --green-pale: rgba(0,255,135,0.08);
+    --dark: #1E2530;
+    --dark2: #252D3A;
+    --dark3: #2E3847;
+    --charcoal: #44556A;
+    --orange: #F26B43;
+    --white: #FFFFFF;
+    --offwhite: #F7F9FC;
+    --light: #EEF2F8;
+    --muted: #8A96A8;
+    --radius: 12px;
+    --shadow: 0 4px 24px rgba(0,0,0,0.10);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--offwhite);
+    color: var(--dark);
+    min-height: 100vh;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--dark);
+    padding: 48px 40px 44px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 60% 120%, rgba(0,255,135,0.10) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  .hero-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0,255,135,0.12);
+    border: 1px solid rgba(0,255,135,0.28);
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 16px;
+  }
+  .hero-tag-dot { width: 6px; height: 6px; background: var(--green); border-radius: 50%; }
+  .hero h1 {
+    font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.15;
+    margin-bottom: 12px;
+    letter-spacing: -0.02em;
+  }
+  .hero h1 span { color: var(--green); }
+  .hero-sub {
+    font-size: 1rem;
+    color: rgba(255,255,255,0.55);
+    max-width: 520px;
+    line-height: 1.65;
+    margin-bottom: 24px;
+  }
+  .hero-pills { display: flex; gap: 10px; flex-wrap: wrap; }
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 6px;
+    padding: 5px 11px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.55);
+  }
+  .pill strong { color: rgba(255,255,255,0.85); font-weight: 500; }
+
+  /* Overall progress */
+  .hero-progress {
+    flex-shrink: 0;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    text-align: center;
+    min-width: 160px;
+  }
+  .hero-progress-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: var(--green);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .hero-progress-label {
+    font-size: 11px;
+    color: rgba(255,255,255,0.4);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .hero-progress-bar {
+    margin-top: 12px;
+    height: 4px;
+    background: rgba(255,255,255,0.10);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .hero-progress-fill {
+    height: 100%;
+    background: var(--green);
+    border-radius: 2px;
+    transition: width 0.6s ease;
+  }
+
+  /* ── MAIN ── */
+  .main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 36px 24px 60px;
+  }
+
+  /* ── SECTION LABEL ── */
+  .section-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--light);
+  }
+
+  /* ── MODULE GRID ── */
+  .module-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 36px;
+  }
+  @media(max-width: 620px) { .module-grid { grid-template-columns: 1fr; } }
+
+  .module-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    border-left: 4px solid var(--green);
+    padding: 24px 22px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    transition: transform 0.15s, box-shadow 0.15s;
+    position: relative;
+    overflow: hidden;
+  }
+  .module-card:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,0.13); }
+  .module-card.done { border-left-color: var(--green); }
+  .module-card.done::after {
+    content: '✓';
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 26px;
+    height: 26px;
+    background: var(--green);
+    color: var(--dark);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 26px;
+    text-align: center;
+  }
+  .module-card.wide { grid-column: 1 / -1; border-left-color: var(--orange); }
+
+  .module-num {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: var(--green-dim);
+  }
+  .module-card.wide .module-num { color: var(--orange); }
+
+  .module-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--dark);
+    line-height: 1.3;
+  }
+  .module-desc {
+    font-size: 0.85rem;
+    color: var(--charcoal);
+    line-height: 1.55;
+    flex: 1;
+  }
+
+  .module-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .badge {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 9px;
+    border-radius: 6px;
+    background: var(--light);
+    color: var(--charcoal);
+  }
+  .badge.level { background: rgba(0,255,135,0.10); color: var(--green-dim); }
+  .badge.time  { background: rgba(0,0,0,0.04); color: var(--muted); }
+  .badge.ref   { background: rgba(242,107,67,0.10); color: var(--orange); }
+
+  .module-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 9px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.15s;
+    border: none;
+    font-family: inherit;
+    background: var(--green);
+    color: var(--dark);
+    width: fit-content;
+  }
+  .module-btn:hover { background: var(--green-dim); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(0,255,135,0.30); }
+  .module-btn.secondary {
+    background: var(--white);
+    color: var(--dark);
+    border: 1px solid var(--light);
+  }
+  .module-btn.secondary:hover { background: var(--offwhite); box-shadow: none; }
+  .module-btn.orange-btn { background: var(--orange); color: var(--white); }
+  .module-btn.orange-btn:hover { background: #d4522e; box-shadow: 0 4px 14px rgba(242,107,67,0.30); }
+
+  /* progress ring på knappen */
+  .done .module-btn { background: var(--light); color: var(--charcoal); }
+  .done .module-btn::before { content: '↩ '; }
+
+  /* ── INFO BOX ── */
+  .info-box {
+    background: rgba(0,255,135,0.06);
+    border: 1px solid rgba(0,255,135,0.22);
+    border-radius: var(--radius);
+    padding: 18px 22px;
+    margin-bottom: 32px;
+    font-size: 0.9rem;
+    line-height: 1.65;
+    color: var(--charcoal);
+  }
+  .info-box strong { color: var(--dark); }
+  .info-box a { color: var(--green-dim); font-weight: 600; }
+
+  /* ── HOW TO ── */
+  .how-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 14px;
+    margin-bottom: 36px;
+  }
+  .how-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 18px 16px;
+    box-shadow: var(--shadow);
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .how-num {
+    min-width: 30px;
+    height: 30px;
+    background: var(--green);
+    color: var(--dark);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .how-body strong { display: block; font-size: 0.88rem; margin-bottom: 3px; }
+  .how-body p { font-size: 0.80rem; color: var(--charcoal); line-height: 1.5; }
+
+  /* ── SP BACK LINK ── */
+  .sp-back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: rgba(255,255,255,0.45);
+    font-size: 12px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: color 0.15s;
+    margin-bottom: 20px;
+  }
+  .sp-back-link:hover { color: rgba(255,255,255,0.80); }
+  .sp-back-link svg { opacity: 0.6; }
+
+  /* ── CONTACT ── */
+  .contact-bar {
+    background: var(--dark);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+  .contact-bar p { font-size: 0.9rem; color: rgba(255,255,255,0.6); }
+  .contact-bar strong { color: var(--white); }
+  .contact-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0,255,135,0.12);
+    border: 1px solid rgba(0,255,135,0.25);
+    color: var(--green);
+    padding: 9px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.15s;
+  }
+  .contact-link:hover { background: rgba(0,255,135,0.20); }
+</style>
+</head>
+<body>
+
+<!-- ── HERO ── -->
+<div class="hero">
+  <div class="hero-inner">
+    <div>
+      <a href="https://instabank.sharepoint.com/sites/GDPR_Instabank" class="sp-back-link">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        Tilbake til GDPR-siden på intranett
+      </a>
+      <div class="hero-tag"><div class="hero-tag-dot"></div>GDPR-opplæring 2026</div>
+      <h1>Personvern &amp; <span>GDPR</span></h1>
+      <p class="hero-sub">Instabanks komplette opplæringsprogram. Velg modulen som passer ditt nivå og ansvarsområde.</p>
+      <div class="hero-pills">
+        <div class="pill">📋 <strong>Eier:</strong> Personvernombud (DPO)</div>
+        <div class="pill">📅 <strong>Oppdatert:</strong> Juni 2026</div>
+        <div class="pill">🔄 <strong>Revisjon:</strong> Juni 2027</div>
+      </div>
+    </div>
+    <div class="hero-progress">
+      <div class="hero-progress-num" id="prog-num">0/5</div>
+      <div class="hero-progress-label">moduler fullført</div>
+      <div class="hero-progress-bar">
+        <div class="hero-progress-fill" id="prog-fill" style="width:0%"></div>
+      </div>
+      <div id="user-greeting" style="display:none;margin-top:10px;font-size:11px;color:rgba(255,255,255,0.45)"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── MAIN ── -->
+<div class="main">
+
+  <!-- Slik fungerer opplæringen -->
+  <div class="section-label" style="margin-bottom:18px">Slik fungerer opplæringen</div>
+  <div class="how-grid" style="margin-bottom:28px">
+    <div class="how-card">
+      <div class="how-num">1</div>
+      <div class="how-body">
+        <strong>Velg din modul</strong>
+        <p>Start med Modul 1 om du er ny. Gå direkte til din nivå-modul om du har tatt grunnkurset.</p>
+      </div>
+    </div>
+    <div class="how-card">
+      <div class="how-num">2</div>
+      <div class="how-body">
+        <strong>Gå gjennom seksjoner</strong>
+        <p>Hver modul er delt i seksjoner med teori, caser og quiz. Naviger med Forrige/Neste.</p>
+      </div>
+    </div>
+    <div class="how-card">
+      <div class="how-num">3</div>
+      <div class="how-body">
+        <strong>Bestå quizen</strong>
+        <p>80 % eller mer er bestått. Du kan ta quizen om igjen hvis du ikke når kravet.</p>
+      </div>
+    </div>
+    <div class="how-card">
+      <div class="how-num">4</div>
+      <div class="how-body">
+        <strong>Registrer i LMS</strong>
+        <p>Ta den formelle testen i LMS-systemet etter fullført modul for å få opplæringen registrert.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Moduler -->
+  <div class="section-label">Moduler</div>
+  <div class="module-grid" id="module-grid">
+
+    <!-- MODUL 1 -->
+    <div class="module-card" id="card-1">
+      <div class="module-num">Modul 1 · Alle ansatte</div>
+      <div class="module-title">Personvern for alle – Grunnkurs</div>
+      <div class="module-desc">Hva er personopplysninger, GDPR-prinsippene, de registrertes rettigheter, hva du gjør ved brudd og hvem DPO er.</div>
+      <div class="module-meta">
+        <span class="badge level">Nivå 1</span>
+      </div>
+      <!-- BYTT URL HER -->
+      <a class="module-btn" href="modul1_grunnkurs.html" id="btn-1">
+        Start modul →
+      </a>
+    </div>
+
+    <!-- MODUL 2 -->
+    <div class="module-card" id="card-2">
+      <div class="module-num">Modul 2 · Nivå 2</div>
+      <div class="module-title">Personvern i det daglige arbeidet</div>
+      <div class="module-desc">Rettslig grunnlag i praksis, samtykke, rettighetshenvendelser, dataminimering og sikker deling – inkl. Do's &amp; Don'ts for e-post.</div>
+      <div class="module-meta">
+        <span class="badge level">Nivå 2</span>
+      </div>
+      <!-- BYTT URL HER -->
+      <a class="module-btn" href="modul2_daglig_arbeid.html" id="btn-2">
+        Start modul →
+      </a>
+    </div>
+
+    <!-- MODUL 3 -->
+    <div class="module-card" id="card-3">
+      <div class="module-num">Modul 3 · Nivå 2 og 3</div>
+      <div class="module-title">Avvik og hendelseshåndtering</div>
+      <div class="module-desc">Typer personvernbrudd, intern varslingskjede, 72-timersregelen og Datatilsynet – med scenariøvelser.</div>
+      <div class="module-meta">
+        <span class="badge level">Nivå 2–3</span>
+      </div>
+      <!-- BYTT URL HER -->
+      <a class="module-btn" href="modul3_avvik.html" id="btn-3">
+        Start modul →
+      </a>
+    </div>
+
+    <!-- MODUL 4 -->
+    <div class="module-card" id="card-4">
+      <div class="module-num">Modul 4 · Nivå 3</div>
+      <div class="module-title">Ledere, IT og Compliance</div>
+      <div class="module-desc">Privacy by Design, DPIA, databehandleravtaler, tredjelandsoverføring og DORA – for deg med særlig ansvar.</div>
+      <div class="module-meta">
+        <span class="badge level">Nivå 3</span>
+      </div>
+      <!-- BYTT URL HER -->
+      <a class="module-btn" href="modul4_ledere_it.html" id="btn-4">
+        Start modul →
+      </a>
+    </div>
+
+    <!-- MODUL 5 – full bredde -->
+    <div class="module-card wide" id="card-5">
+      <div class="module-num">Modul 5 · Spesialister</div>
+      <div class="module-title">Sektorspesifikt personvern i bank</div>
+      <div class="module-desc">Fordypning i kredittvurdering og art. 22, AML/KYC vs. GDPR, Open Banking/PSD2, AI Act og Datatilsynets tilsynspraksis mot finanssektoren.</div>
+      <div class="module-meta">
+        <span class="badge ref">Etter DPOs vurdering</span>
+      </div>
+      <!-- BYTT URL HER -->
+      <a class="module-btn orange-btn" href="modul5_fordypning.html" id="btn-5">
+        Start modul →
+      </a>
+    </div>
+
+  </div>
+
+  <!-- Do's & Don'ts hurtigreferanse -->
+  <div class="section-label">Hurtigreferanse</div>
+  <div class="module-grid" style="grid-template-columns:1fr; margin-bottom:32px">
+    <div class="module-card wide" style="border-left-color:var(--orange)">
+      <div class="module-num" style="color:var(--orange)">Ressurs · Alle ansatte</div>
+      <div class="module-title">GDPR Do's &amp; Don'ts – E-post</div>
+      <div class="module-desc">Kompakt hurtigreferanse for hva du skal og ikke skal gjøre når du behandler personopplysninger via e-post. Kan skrives ut og henges opp.</div>
+      <div class="module-meta">
+        <span class="badge ref">Hurtigreferanse</span>
+      </div>
+      <a class="module-btn orange-btn" href="gdpr_dosanddonts.html">
+        Åpne referanse →
+      </a>
+    </div>
+  </div>
+
+  <!-- Kontakt DPO -->
+  <div class="contact-bar">
+    <p><strong>Spørsmål om personvern?</strong><br>Personvernombudet (DPO) er din ressurs – ta kontakt direkte.</p>
+    <a class="contact-link" href="mailto:DPO@instabank.no">✉ DPO@instabank.no</a>
+  </div>
+
+</div><!-- /main -->
+
+<script>
+// ─────────────────────────────────────────────
+// Fremdrift: server (Azure Table Storage via /api/progress) er kilden
+// til sannhet når brukeren er innlogget. localStorage brukes som lokal
+// cache / fallback når API-et ikke er tilgjengelig (f.eks. under lokal
+// utvikling uten SWA-auth).
+// Modulene kan i tillegg sende window.postMessage({moduleDone: n}).
+// ─────────────────────────────────────────────
+var STORAGE_KEY = 'ib_gdpr_done';
+
+function getDone() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch(e) { return []; }
+}
+function setDone(list) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(list)); } catch(e) {}
+}
+function markDone(n) {
+  var done = getDone();
+  if (!done.includes(n)) { done.push(n); setDone(done); }
+  updateUI();
+}
+
+// Hent fremdrift fra API-et (server-side sannhet) og synkroniser med UI.
+function syncProgressFromServer() {
+  if (!window.fetch) return;
+  fetch('/api/progress')
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (data) {
+      if (!data || !data.modules) return;
+      var done = Object.keys(data.modules).map(function (k) { return parseInt(k, 10); });
+      setDone(done);
+      updateUI();
+    })
+    .catch(function () { /* API ikke tilgjengelig ennå — fortsett med localStorage */ });
+}
+
+// Vis innlogget bruker (Azure SWA Entra ID) i header, om tilgjengelig.
+function initIdentity() {
+  var el = document.getElementById('user-greeting');
+  if (!el || !window.fetch) return;
+  fetch('/.auth/me')
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (data) {
+      if (!data) return;
+      var principal = data.clientPrincipal;
+      if (principal && principal.userDetails) {
+        el.textContent = 'Innlogget som ' + principal.userDetails;
+        el.style.display = 'block';
+      }
+    })
+    .catch(function () {});
+}
+
+function updateUI() {
+  var done = getDone();
+  var count = done.length;
+  document.getElementById('prog-num').textContent = count + '/5';
+  document.getElementById('prog-fill').style.width = (count / 5 * 100) + '%';
+
+  for (var i = 1; i <= 5; i++) {
+    var card = document.getElementById('card-' + i);
+    var btn  = document.getElementById('btn-' + i);
+    if (!card || !btn) continue;
+    if (done.includes(i)) {
+      card.classList.add('done');
+      btn.textContent = 'Ta om igjen';
+    } else {
+      card.classList.remove('done');
+    }
+  }
+}
+
+// Lytt på meldinger fra iframe-modulene
+window.addEventListener('message', function(e) {
+  if (e.data && e.data.moduleDone) {
+    markDone(e.data.moduleDone);
+  }
+});
+
+// Høyderapport til SP parent (om denne siden selv er i iframe)
+function _spHeight() {
+  var h = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
+  try { window.parent.postMessage({ spHeight: h }, '*'); } catch(e) {}
+}
+window.addEventListener('load', function() { _spHeight(); setTimeout(_spHeight, 400); });
+
+// Init
+updateUI();
+initIdentity();
+syncProgressFromServer();
+</script>
+</body>
+</html>

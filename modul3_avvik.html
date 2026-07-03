@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modul 3 – Avvik og hendelsesh&#229;ndtering | Instabank Personvernoppl&aelig;ring</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
+
+  :root {
+    --green: #00FF87;
+    --green-dim: #00CC6A;
+    --dark: #1E2530;
+    --dark2: #252D3A;
+    --dark3: #2E3847;
+    --charcoal: #44556A;
+    --orange: #F26B43;
+    --white: #FFFFFF;
+    --offwhite: #F7F9FC;
+    --light: #EEF2F8;
+    --muted: #8A96A8;
+    --red: #EF4444;
+    --correct: #00FF87;
+    --wrong: #EF4444;
+    --radius: 12px;
+    --shadow: 0 4px 24px rgba(0,0,0,0.12);
+    --transition: 0.2s ease;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--offwhite);
+    color: var(--dark);
+    min-height: 100vh;
+  }
+
+  /* ── NAV ── */
+  .top-nav {
+    background: var(--dark);
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 2px solid var(--green);
+  }
+  .nav-logo img { height: 28px; }
+  .nav-module-badge {
+    background: var(--green);
+    color: var(--dark);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 20px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .nav-progress {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .nav-progress-bar {
+    width: 120px;
+    height: 4px;
+    background: var(--dark3);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .nav-progress-fill {
+    height: 100%;
+    background: var(--green);
+    border-radius: 2px;
+    transition: width 0.5s ease;
+    width: 0%;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--dark);
+    padding: 32px 32px 28px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 120%, rgba(0,255,135,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-module-label {
+    display: inline-block;
+    background: rgba(0,255,135,0.15);
+    border: 1px solid rgba(0,255,135,0.3);
+    color: var(--green);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.1;
+    margin-bottom: 16px;
+  }
+  .hero h1 span { color: var(--green); }
+  .hero-sub {
+    font-size: 1.1rem;
+    color: var(--muted);
+    max-width: 600px;
+    margin: 0 auto 32px;
+    line-height: 1.6;
+  }
+  .hero-meta {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .hero-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .hero-meta-item .dot {
+    width: 6px; height: 6px;
+    background: var(--green);
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* ── PROGRESS DOTS ── */
+  .progress-dots {
+    background: var(--white);
+    border-bottom: 1px solid var(--light);
+    padding: 16px 32px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    overflow-x: auto;
+  }
+  .pdot {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--light);
+    border: 2px solid transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+  .pdot.active { border-color: var(--green); background: rgba(0,255,135,0.1); color: var(--dark); }
+  .pdot.done { background: var(--green); color: var(--dark); border-color: var(--green); }
+  .pdot-line { flex: 1; height: 2px; background: var(--light); min-width: 16px; flex-shrink: 0; }
+  .pdot-line.done { background: var(--green); }
+
+  /* ── MAIN CONTENT ── */
+  .content-wrap {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  /* ── SECTION ── */
+  .section {
+    display: none;
+    animation: fadeIn 0.3s ease;
+  }
+  .section.active { display: block; }
+  @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .section-num {
+    width: 44px; height: 44px;
+    background: var(--green);
+    color: var(--dark);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .section-title { font-size: 1.5rem; font-weight: 700; color: var(--dark); }
+  .section-subtitle { font-size: 0.9rem; color: var(--muted); margin-top: 4px; }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 28px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+    border-left: 4px solid var(--green);
+  }
+  .card-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .card-title .icon {
+    width: 32px; height: 32px;
+    background: rgba(0,255,135,0.12);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px;
+    flex-shrink: 0;
+  }
+
+  /* ── INFO BOX ── */
+  .info-box {
+    background: rgba(0,255,135,0.06);
+    border: 1px solid rgba(0,255,135,0.25);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--charcoal);
+  }
+  .info-box strong { color: var(--dark); }
+
+  .warning-box {
+    background: rgba(242,107,67,0.06);
+    border: 1px solid rgba(242,107,67,0.25);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--charcoal);
+  }
+  .warning-box strong { color: var(--orange); }
+
+  /* ── CHECKLIST ── */
+  .checklist { list-style: none; }
+  .checklist li {
+    padding: 10px 0 10px 32px;
+    position: relative;
+    font-size: 0.95rem;
+    line-height: 1.55;
+    color: var(--dark);
+    border-bottom: 1px solid var(--light);
+  }
+  .checklist li:last-child { border-bottom: none; }
+  .checklist li::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 14px;
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    background: rgba(0,255,135,0.2);
+    border: 2px solid var(--green);
+  }
+  .checklist li.sub {
+    padding-left: 52px;
+    font-size: 0.88rem;
+    color: var(--charcoal);
+  }
+  .checklist li.sub::before {
+    left: 24px;
+    width: 12px; height: 12px;
+    top: 14px;
+    background: transparent;
+    border-color: var(--muted);
+  }
+  .checklist li strong { color: var(--dark); }
+
+  /* ── STAT CALLOUTS ── */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  .stat-card {
+    background: var(--dark);
+    border-radius: var(--radius);
+    padding: 24px 20px;
+    text-align: center;
+    border-top: 3px solid var(--green);
+  }
+  .stat-value {
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: var(--green);
+    font-family: 'DM Mono', monospace;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .stat-label {
+    font-size: 0.82rem;
+    color: var(--muted);
+    line-height: 1.4;
+  }
+
+  /* ── TWO-COL ── */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  @media(max-width:600px) { .two-col { grid-template-columns: 1fr; } }
+  .col-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--shadow);
+  }
+  .col-card.green { border-top: 3px solid var(--green); }
+  .col-card.orange { border-top: 3px solid var(--orange); }
+  .col-card h4 {
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 12px;
+  }
+  .col-card.green h4 { color: var(--green-dim); }
+  .col-card.orange h4 { color: var(--orange); }
+
+  /* ── QUIZ ── */
+  .quiz-wrap {
+    background: var(--dark);
+    border-radius: var(--radius);
+    padding: 32px;
+    margin-bottom: 20px;
+  }
+  .quiz-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 12px;
+  }
+  .quiz-question {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 24px;
+    line-height: 1.5;
+  }
+  .quiz-options { display: flex; flex-direction: column; gap: 10px; }
+  .quiz-option {
+    background: var(--dark3);
+    border: 2px solid transparent;
+    border-radius: 10px;
+    padding: 14px 18px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    color: var(--white);
+    transition: all var(--transition);
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .quiz-option:hover:not(:disabled) {
+    border-color: rgba(0,255,135,0.4);
+    background: rgba(0,255,135,0.05);
+  }
+  .quiz-option .opt-letter {
+    min-width: 28px; height: 28px;
+    border-radius: 6px;
+    background: rgba(255,255,255,0.08);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--green);
+    flex-shrink: 0;
+  }
+  .quiz-option.correct {
+    border-color: var(--correct);
+    background: rgba(0,255,135,0.12);
+  }
+  .quiz-option.correct .opt-letter { background: var(--correct); color: var(--dark); }
+  .quiz-option.wrong {
+    border-color: var(--wrong);
+    background: rgba(239,68,68,0.08);
+  }
+  .quiz-option.wrong .opt-letter { background: var(--wrong); color: white; }
+  .quiz-option:disabled { cursor: not-allowed; }
+  .quiz-feedback {
+    margin-top: 16px;
+    padding: 14px 18px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    display: none;
+  }
+  .quiz-feedback.correct-fb {
+    background: rgba(0,255,135,0.1);
+    border: 1px solid rgba(0,255,135,0.3);
+    color: var(--green);
+    display: block;
+  }
+  .quiz-feedback.wrong-fb {
+    background: rgba(239,68,68,0.08);
+    border: 1px solid rgba(239,68,68,0.25);
+    color: #FCA5A5;
+    display: block;
+  }
+
+  /* ── SCENARIO ── */
+  .scenario-box {
+    background: var(--dark2);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 16px;
+    border-left: 4px solid var(--orange);
+  }
+  .scenario-tag {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--orange);
+    margin-bottom: 10px;
+  }
+  .scenario-text {
+    font-size: 0.95rem;
+    color: #CBD5E1;
+    line-height: 1.65;
+    margin-bottom: 16px;
+  }
+  .scenario-toggle {
+    background: transparent;
+    border: 1px solid rgba(242,107,67,0.4);
+    color: var(--orange);
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+  .scenario-toggle:hover { background: rgba(242,107,67,0.1); }
+  .scenario-answer {
+    display: none;
+    margin-top: 14px;
+    padding: 14px;
+    background: rgba(0,255,135,0.05);
+    border: 1px solid rgba(0,255,135,0.2);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    color: #A7F3D0;
+    line-height: 1.6;
+  }
+  .scenario-answer.open { display: block; animation: fadeIn 0.2s ease; }
+
+  /* ── ICON GRID ── */
+  .icon-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  .icon-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--shadow);
+    border-top: 3px solid;
+  }
+  .icon-card .ic-icon { font-size: 1.8rem; margin-bottom: 10px; }
+  .icon-card .ic-title { font-size: 0.9rem; font-weight: 700; margin-bottom: 8px; }
+  .icon-card ul { list-style: none; }
+  .icon-card ul li {
+    font-size: 0.82rem;
+    color: var(--charcoal);
+    padding: 3px 0;
+    padding-left: 14px;
+    position: relative;
+  }
+  .icon-card ul li::before {
+    content: '·';
+    position: absolute; left: 0;
+    color: var(--green);
+    font-weight: 700;
+  }
+
+  /* ── STEPS ── */
+  .steps { margin-bottom: 20px; }
+  .step {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 14px;
+    align-items: flex-start;
+  }
+  .step-num {
+    min-width: 32px; height: 32px;
+    background: var(--green);
+    color: var(--dark);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .step-body { font-size: 0.95rem; line-height: 1.6; }
+  .step-body strong { display: block; margin-bottom: 2px; color: var(--dark); }
+
+  /* ── NAV BUTTONS ── */
+  .nav-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 40px;
+    gap: 12px;
+  }
+  .btn {
+    padding: 12px 28px;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition);
+    border: none;
+    font-family: inherit;
+  }
+  .btn-primary {
+    background: var(--green);
+    color: var(--dark);
+  }
+  .btn-primary:hover { background: var(--green-dim); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,255,135,0.3); }
+  .btn-secondary {
+    background: var(--white);
+    color: var(--dark);
+    border: 1px solid var(--light);
+  }
+  .btn-secondary:hover { background: var(--offwhite); }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
+
+  /* ── COMPLETION ── */
+  .completion {
+    text-align: center;
+    padding: 60px 24px;
+    display: none;
+  }
+  .completion.active { display: block; animation: fadeIn 0.5s ease; }
+  .completion-badge {
+    width: 80px; height: 80px;
+    background: var(--green);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2rem;
+    margin: 0 auto 24px;
+    box-shadow: 0 0 0 12px rgba(0,255,135,0.12), 0 0 0 24px rgba(0,255,135,0.05);
+  }
+  .completion h2 { font-size: 1.8rem; font-weight: 700; margin-bottom: 12px; }
+  .completion p { color: var(--charcoal); max-width: 480px; margin: 0 auto 32px; line-height: 1.6; }
+  .score-display {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--dark);
+    padding: 12px 24px;
+    border-radius: 40px;
+    margin-bottom: 32px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--green);
+  }
+
+  /* ── FOOTER ── */
+  .page-footer {
+    background: var(--dark);
+    padding: 24px 32px;
+    text-align: center;
+    font-size: 0.82rem;
+    color: var(--muted);
+    border-top: 1px solid var(--dark3);
+  }
+  .page-footer img { height: 20px; opacity: 0.6; vertical-align: middle; margin-right: 10px; }
+
+  /* ── RESPONSIVE ── */
+  @media(max-width:600px) {
+    .top-nav { padding: 0 16px; }
+    .hero { padding: 40px 16px 36px; }
+    .content-wrap { padding: 24px 16px 60px; }
+    .progress-dots { padding: 12px 16px; }
+  }
+
+  /* ── TOPBAR (hjemknapp) ── */
+  .course-topbar {
+    background: var(--dark, #1E2530);
+    border-bottom: 2px solid var(--green, #00FF87);
+    padding: 0 24px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 200;
+  }
+  .course-home-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0,255,135,0.12);
+    border: 1px solid rgba(0,255,135,0.30);
+    color: var(--green, #00FF87);
+    padding: 7px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    font-family: inherit;
+    transition: background 0.15s;
+    letter-spacing: 0.02em;
+  }
+  .course-home-btn:hover { background: rgba(0,255,135,0.22); }
+  .course-topbar-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.45);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+</style>
+</head>
+<body>
+<div class="course-topbar">
+  <a href="index.html" class="course-home-btn">⌂ Hjem</a>
+  <span class="course-topbar-title">Modul 3 – Avvik</span>
+</div>
+
+<div class="hero">
+  <div class="hero-module-label">Modul 3 av 5</div>
+  <h1>Avvik og <span>hendelsesh&#229;ndtering</span></h1>
+  <p class="hero-sub">Hva gj&#248;r du de f&#248;rste 72 timene? L&#230;r &#229; h&#229;ndtere personvernbrudd riktig.</p>
+  <div class="hero-meta">
+    <span class="hero-meta-item"><span class="dot"></span>M&#229;lgruppe: Niv&#229; 2 og 3</span>
+    <span class="hero-meta-item"><span class="dot"></span>Varighet: 45 min</span>
+    <span class="hero-meta-item"><span class="dot"></span>Format: Selvstudie</span>
+  </div>
+</div>
+<div class="progress-dots"><div class="pdot" data-idx="0" onclick="goToSection(0)">1</div><div class="pdot-line" data-idx="0"></div><div class="pdot" data-idx="1" onclick="goToSection(1)">2</div><div class="pdot-line" data-idx="1"></div><div class="pdot" data-idx="2" onclick="goToSection(2)">3</div><div class="pdot-line" data-idx="2"></div><div class="pdot" data-idx="3" onclick="goToSection(3)">4</div><div class="pdot-line" data-idx="3"></div><div class="pdot" data-idx="4" onclick="goToSection(4)">5</div><div class="pdot-line" data-idx="4"></div><div class="pdot" data-idx="5" onclick="goToSection(5)">6</div></div>
+<main class="content-wrap">
+<div class="section active" id="section-0">
+<div class="section-header">
+  <div class="section-num">&#9312;</div>
+  <div><div class="section-title">Typer personvernbrudd</div><div class="section-subtitle">Hva teller som et brudd?</div></div>
+</div>
+<div class="icon-grid"><div class="icon-card" style="border-color:#EF4444"><div class="ic-icon">&#x1F512;</div><div class="ic-title" style="color:#EF4444">Konfidensialitetsbrudd</div><ul><li>Uautorisert tilgang til data</li><li>Feilsendt e-post med kundeoppl.</li><li>Datatyveri fra systemer</li></ul></div><div class="icon-card" style="border-color:#F26B43"><div class="ic-icon">&#x2699;&#xFE0F;</div><div class="ic-title" style="color:#F26B43">Integritetsbrudd</div><ul><li>Uautorisert endring av data</li><li>Manipulering av kontoposter</li><li>Feil i transaksjonsregistre</li></ul></div><div class="icon-card" style="border-color:#6366F1"><div class="ic-icon">&#x274C;</div><div class="ic-title" style="color:#6366F1">Tilgjengelighetsbrudd</div><ul><li>Data utilgjengelig/ødelagt</li><li>Utilsiktet sletting</li><li>Ransomware-angrep</li></ul></div></div><div class="card"><div class="card-title"><span class="icon">&#x1F4CB;</span>Vanlige hendelsestyper i Instabank</div><ul class="checklist"><li><strong>Menneskelige feil (hyppigst):</strong></li><li class="sub">Feilsendt e-post eller post med kundeopplysninger</li><li class="sub">Feil kunde ser annens kontoinformasjon</li><li class="sub">Tapt laptop, mobiltelefon eller USB-pinne</li><li><strong>Tekniske hendelser:</strong></li><li class="sub">Systemfeil som eksponerer data</li><li class="sub">Sikkerhetskopisvikt</li><li><strong>Ondsinnede handlinger:</strong></li><li class="sub">Phishing – legitimasjon kompromittert</li><li class="sub">Innsidertrussel – ansatt misbruker tilgang</li></ul></div><div class="info-box"><strong>Husk:</strong> Selv små feil skal rapporteres – DPO avgjør om det er meldepliktig.</div>
+<div class="nav-buttons"><div></div><button class="btn btn-primary" onclick="nextSection()">Neste &rarr;</button></div>
+</div><div class="section" id="section-1">
+<div class="section-header">
+  <div class="section-num">&#9313;</div>
+  <div><div class="section-title">Intern varslingskjede</div><div class="section-subtitle">Hva skjer de f&#248;rste timene?</div></div>
+</div>
+<div class="card"><div class="card-title"><span class="icon">&#x1F6A8;</span>Intern varslingskjede – steg for steg</div><div class="steps"><div class="step"><div class="step-num">1</div><div class="step-body"><strong>STOPP (minutt 0)</strong>Avverge videre skade – logg ut, sikre enhet.</div></div><div class="step"><div class="step-num">2</div><div class="step-body"><strong>VARSLE DPO umiddelbart (innen 1 time)</strong>Ring DPO direkte. Se kontaktinformasjon på GDPR intranett-siden.</div></div><div class="step"><div class="step-num">3</div><div class="step-body"><strong>DPO iverksetter tiltak (time 1–4)</strong>DPO vurderer alvorlighet, involverer CISO og juridisk ved behov.</div></div><div class="step"><div class="step-num">4</div><div class="step-body"><strong>Vurdering av meldeplikt (time 4–24)</strong>DPO avgj&#248;r om Datatilsynet skal varsles innen 72 timer.</div></div></div></div><div class="stat-grid"><div class="stat-card"><div class="stat-value">72t</div><div class="stat-label">Frist for varsling til Datatilsynet</div></div><div class="stat-card"><div class="stat-value">2 %</div><div class="stat-label">Mulig gebyr av global omsetning ved brudd</div></div><div class="stat-card"><div class="stat-value">5 år</div><div class="stat-label">Datatilsynet kan kreve bevaring av hendelsesdata</div></div></div>
+<div class="nav-buttons"><button class="btn btn-secondary" onclick="prevSection()">&larr; Forrige</button><button class="btn btn-primary" onclick="nextSection()">Neste &rarr;</button></div>
+</div><div class="section" id="section-2">
+<div class="section-header">
+  <div class="section-num">&#9314;</div>
+  <div><div class="section-title">72-timersregelen og Datatilsynet</div><div class="section-subtitle">Varslingsprosedyre og innhold</div></div>
+</div>
+<div class="card"><div class="card-title"><span class="icon">&#x1F4E8;</span>Hva skal varslingen til Datatilsynet inneholde?</div><ul class="checklist"><li><strong>Obligatorisk innhold (art. 33 nr. 3):</strong></li><li class="sub">Hva skjedde? Når? Hvordan ble det oppdaget?</li><li class="sub">Kategorier og omtrentlig antall berørte registrerte</li><li class="sub">Kategorier og omtrentlig antall berørte opplysninger</li><li class="sub">Kontaktinformasjon for DPO</li><li class="sub">Sannsynlige konsekvenser av bruddet</li><li class="sub">Tiltak som er truffet eller planlegges</li></ul></div><div class="info-box"><strong>Varsling skjer via Altinn</strong> – tjeneste «Melding om personvernbrudd».<br><br><strong>Viktig:</strong> Delvis varsling er bedre enn ingen – man kan supplere i etterkant (art. 33 nr. 4).</div>
+<div class="nav-buttons"><button class="btn btn-secondary" onclick="prevSection()">&larr; Forrige</button><button class="btn btn-primary" onclick="nextSection()">Neste &rarr;</button></div>
+</div><div class="section" id="section-3">
+<div class="section-header">
+  <div class="section-num">&#9315;</div>
+  <div><div class="section-title">Scen&#230;ri&#248;velse</div><div class="section-subtitle">Tre realistiske hendelser</div></div>
+</div>
+<div class="scenario-box">
+<div class="scenario-tag">Scenario 1 – Feilsendt e-post</div>
+<div class="scenario-text">En saksbehandler sender månedlig kredittstatus til 12 kunder via en gammel e-postliste. Tre mottakere bekrefter at de har mottatt andres opplysninger.</div>
+<button class="scenario-toggle" onclick="toggleAnswer('ans-m3c1')">&#9654; Vis fasitsvar</button>
+<div class="scenario-answer" id="ans-m3c1"><strong>Svar:</strong> Konfidensialitetsbrudd. Sannsynligvis meldepliktig. Vurder varsling til berørte kunder. Varsle DPO umiddelbart.</div>
+</div><div class="scenario-box">
+<div class="scenario-tag">Scenario 2 – Tapt laptop</div>
+<div class="scenario-text">Rådgiver oppdager at arbeidslaptop er borte etter kundearrangement. Ingen helkryptering. Inneholder KYC-data for 200 kunder (navn, fødselsnummer, inntekt, formue).</div>
+<button class="scenario-toggle" onclick="toggleAnswer('ans-m3c2')">&#9654; Vis fasitsvar</button>
+<div class="scenario-answer" id="ans-m3c2"><strong>Svar:</strong> Svært sannsynlig meldepliktig – sensitive finansopplysninger for mange, ingen kryptering. Høy risiko. Varsle DPO umiddelbart.</div>
+</div><div class="scenario-box">
+<div class="scenario-tag">Scenario 3 – Phishing og legitimasjonstyveri</div>
+<div class="scenario-text">IT-sikkerhet varsler: en ansatt klikket på phishing-lenke og angriperen har hatt tilgang til CRM-systemet i ca. 4 timer.</div>
+<button class="scenario-toggle" onclick="toggleAnswer('ans-m3c3')">&#9654; Vis fasitsvar</button>
+<div class="scenario-answer" id="ans-m3c3"><strong>Svar:</strong> Ja, meldepliktig. Sperre tilgang umiddelbart. Logganalyse er avgjørende for å kartlegge omfang.</div>
+</div>
+<div class="nav-buttons"><button class="btn btn-secondary" onclick="prevSection()">&larr; Forrige</button><button class="btn btn-primary" onclick="nextSection()">Neste &rarr;</button></div>
+</div><div class="section" id="section-4">
+<div class="section-header">
+  <div class="section-num">&#9316;</div>
+  <div><div class="section-title">Kunnskapssjekk</div><div class="section-subtitle">To sp&#248;rsm&#229;l</div></div>
+</div>
+<div class="quiz-wrap">
+<div class="quiz-label">Sp&#248;rsm&#229;l</div>
+<div class="quiz-question">Hva er fristen for å varsle Datatilsynet om et meldepliktig personvernbrudd?</div>
+<div class="quiz-options"><button class="quiz-option" data-qid="q3a" data-optidx="0" onclick="answerQuiz('q3a',0,1)"><span class="opt-letter">A</span>7 dager fra du oppdager bruddet</button><button class="quiz-option" data-qid="q3a" data-optidx="1" onclick="answerQuiz('q3a',1,1)"><span class="opt-letter">B</span>72 timer fra det tidspunktet bruddet ble kjent for den behandlingsansvarlige</button><button class="quiz-option" data-qid="q3a" data-optidx="2" onclick="answerQuiz('q3a',2,1)"><span class="opt-letter">C</span>30 dager – samme frist som rettighetshenvendelser</button><button class="quiz-option" data-qid="q3a" data-optidx="3" onclick="answerQuiz('q3a',3,1)"><span class="opt-letter">D</span>Ingen fast frist</button></div>
+<div class="quiz-feedback" id="fb-q3a">&#x2713; Riktig! 72 timer fra bruddet ble kjent. Delvis varsling er bedre enn å vente.</div>
+</div><div class="quiz-wrap">
+<div class="quiz-label">Sp&#248;rsm&#229;l</div>
+<div class="quiz-question">Hvilken type brudd er det når en ansatt ved et uhell sletter en hel kundedatabase?</div>
+<div class="quiz-options"><button class="quiz-option" data-qid="q3b" data-optidx="0" onclick="answerQuiz('q3b',0,2)"><span class="opt-letter">A</span>Konfidensialitetsbrudd – data er eksponert for uvedkommende</button><button class="quiz-option" data-qid="q3b" data-optidx="1" onclick="answerQuiz('q3b',1,2)"><span class="opt-letter">B</span>Integritetsbrudd – data er endret uten autorisasjon</button><button class="quiz-option" data-qid="q3b" data-optidx="2" onclick="answerQuiz('q3b',2,2)"><span class="opt-letter">C</span>Tilgjengelighetsbrudd – data er utilgjengelige/ødelagte</button><button class="quiz-option" data-qid="q3b" data-optidx="3" onclick="answerQuiz('q3b',3,2)"><span class="opt-letter">D</span>Det er ikke et personvernbrudd – det var utilsiktet</button></div>
+<div class="quiz-feedback" id="fb-q3b">&#x2713; Riktig! Utilsiktet sletting er et tilgjengelighetsbrudd. Alle tre typene er potensielt meldepliktige.</div>
+</div>
+<div class="nav-buttons"><button class="btn btn-secondary" onclick="prevSection()">&larr; Forrige</button><button class="btn btn-primary" onclick="nextSection()">Neste &rarr;</button></div>
+</div><div class="section" id="section-5">
+<div class="section-header">
+  <div class="section-num">&#9317;</div>
+  <div><div class="section-title">Oppsummering</div><div class="section-subtitle">Hva tar du med deg?</div></div>
+</div>
+<div class="card"><div class="card-title"><span class="icon">&#x1F3AF;</span>Oppsummering – husk dette fra Modul 3</div><ul class="checklist"><li>Tre typer brudd: konfidensialitet (tilgang), integritet (endring), tilgjengelighet (tap)</li><li>Varsle DPO UMIDDELBART – du trenger ikke avgjøre alvorlighetsgrad selv</li><li>72-timersfristen er absolutt – DPO trenger din rapport raskt</li><li>Delvis varsling til Datatilsynet er bedre enn ingen varsling</li><li>Berørte kunder varsles dersom høy risiko for dem (art. 34)</li></ul></div>
+<div class="nav-buttons"><button class="btn btn-secondary" onclick="prevSection()">&larr; Forrige</button><button class="btn btn-primary" onclick="nextSection()">Fullf&oslash;r modul &#x2713;</button></div>
+</div>
+<div class="completion" id="completion">
+  <div class="completion-badge">&#x2713;</div>
+  <h2>Modul 3 fullf&oslash;rt!</h2>
+  <p>Du har gjennomg&aring;tt alt innholdet. Husk &aring; ta den formelle testen i LMS for &aring; f&aring; oppl&aelig;ringen registrert.</p>
+  <div class="score-display">Quiz-resultat: <span id="final-score">&#8211;</span></div>
+  <p style="margin-bottom:12px" id="score-msg"></p>
+  <a href="mailto:dpo@instabank.no" class="btn btn-secondary" style="display:inline-block;text-decoration:none">Kontakt DPO</a>
+<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:12px"><a href="modul4_ledere_it.html" class="btn btn-primary" style="text-decoration:none;display:inline-flex;align-items:center;gap:8px">Modul 4 →</a> <a href="index.html" class="btn btn-secondary" style="text-decoration:none;display:inline-flex;align-items:center;gap:8px">← Oversikt</a></div>
+</div>
+</main>
+
+<script>
+const TOTAL_SECTIONS = 6;
+let currentSection = 0;
+let quizScores = {};
+let completedSections = new Set();
+const MODULE_ID = 3;
+const trackedSections = new Set();
+
+function sendProgress(payload) {
+  try {
+    if (window.fetch) {
+      fetch('/api/progress', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      }).catch(function(err) { console.warn('Progress submit failed', err); });
+    }
+  } catch(e) { console.warn('Progress submit error', e); }
+}
+
+function trackSection(idx) {
+  if (trackedSections.has(idx)) return;
+  trackedSections.add(idx);
+  sendProgress({
+    kind: 'section',
+    moduleId: MODULE_ID,
+    sectionIdx: idx,
+    completedAt: new Date().toISOString()
+  });
+}
+
+function updateProgress() {
+  const done = completedSections.size;
+  var _pt=document.getElementById('progress-text'); if(_pt) _pt.textContent = done + ' / ' + TOTAL_SECTIONS;
+  var _pf=document.getElementById('progress-fill'); if(_pf) _pf.style.width = (done / TOTAL_SECTIONS * 100) + '%';
+  for(let i=0;i<TOTAL_SECTIONS;i++) {
+    const d = document.querySelector('.pdot[data-idx="'+i+'"]');
+    if(!d) continue;
+    d.classList.toggle('done', completedSections.has(i));
+    d.classList.toggle('active', i===currentSection && !completedSections.has(i));
+    const line = document.querySelector('.pdot-line[data-idx="'+i+'"]');
+    if(line) line.classList.toggle('done', completedSections.has(i));
+  }
+}
+function goToSection(idx) {
+  if(idx < 0 || idx >= TOTAL_SECTIONS) return;
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelector('.completion')?.classList.remove('active');
+  const sec = document.getElementById('section-'+idx);
+  if(sec) sec.classList.add('active');
+  currentSection = idx;
+  trackSection(idx);
+  updateProgress();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function nextSection() {
+  completedSections.add(currentSection);
+  updateProgress();
+  if(currentSection + 1 >= TOTAL_SECTIONS) {
+    document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+    document.querySelector('.completion').classList.add('active');
+    let correct=0, total=0;
+    Object.values(quizScores).forEach(s=>{ correct+=s.correct; total+=s.total; });
+    const pct = total>0 ? Math.round(correct/total*100) : 100;
+    sendProgress({
+      kind: 'module',
+      moduleId: MODULE_ID,
+      score: correct,
+      total: total,
+      completedAt: new Date().toISOString()
+    });
+    document.getElementById('final-score').textContent = correct + ' / ' + total + ' (' + pct + '%)';
+    document.getElementById('score-msg').textContent = pct>=80 ? '✓ Bestått – godt jobbet!' : 'Gå gjennom modulen på nytt og prøv quizene igjen.';
+    window.scrollTo({top:0,behavior:'smooth'});
+  } else { goToSection(currentSection + 1); }
+}
+function prevSection() { if(currentSection > 0) goToSection(currentSection-1); }
+function answerQuiz(qid, chosen, correct) {
+  const opts = document.querySelectorAll('[data-qid="'+qid+'"]');
+  opts.forEach(opt => {
+    opt.disabled = true;
+    const idx = parseInt(opt.dataset.optidx);
+    if(idx === correct) opt.classList.add('correct');
+    else if(idx === chosen) opt.classList.add('wrong');
+  });
+  const isCorrect = chosen === correct;
+  if(!quizScores[qid]) quizScores[qid] = {correct:0, total:0};
+  if(!quizScores[qid].answered) {
+    quizScores[qid].total++;
+    if(isCorrect) quizScores[qid].correct++;
+    quizScores[qid].answered = true;
+  }
+  const fb = document.getElementById('fb-'+qid);
+  if(fb) fb.className = 'quiz-feedback ' + (isCorrect ? 'correct-fb' : 'wrong-fb');
+}
+function toggleAnswer(id) {
+  const el = document.getElementById(id);
+  const btn = el.previousElementSibling;
+  if(el.classList.contains('open')) { el.classList.remove('open'); btn.textContent = '▶ Vis fasitsvar'; }
+  else { el.classList.add('open'); btn.textContent = '▲ Skjul svar'; }
+}
+trackSection(0);
+updateProgress();
+</script>
+</body></html>

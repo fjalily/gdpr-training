@@ -1,0 +1,34 @@
+{
+  "auth": {
+    "identityProviders": {
+      "azureActiveDirectory": {
+        "registration": {
+          "openIdIssuer": "https://login.microsoftonline.com/e55a0cda-cf06-4f2a-9c25-970b0df22c1f/v2.0",
+          "clientIdSettingName": "AAD_CLIENT_ID",
+          "clientSecretSettingName": "AAD_CLIENT_SECRET"
+        }
+      }
+    }
+  },
+  "routes": [
+    { "route": "/admin.html", "allowedRoles": ["gdpradmin"] },
+    { "route": "/api/*", "allowedRoles": ["authenticated"] },
+    { "route": "/", "allowedRoles": ["authenticated"] },
+    { "route": "/index.html", "allowedRoles": ["authenticated"] },
+    { "route": "/modul1_grunnkurs.html", "allowedRoles": ["authenticated"] },
+    { "route": "/modul2_daglig_arbeid.html", "allowedRoles": ["authenticated"] },
+    { "route": "/modul3_avvik.html", "allowedRoles": ["authenticated"] },
+    { "route": "/modul4_ledere_it.html", "allowedRoles": ["authenticated"] },
+    { "route": "/modul5_fordypning.html", "allowedRoles": ["authenticated"] },
+    { "route": "/gdpr_dosanddonts.html", "allowedRoles": ["authenticated"] }
+  ],
+  "responseOverrides": {
+    "401": {
+      "redirect": "/.auth/login/aad",
+      "statusCode": 302
+    }
+  },
+  "mimeTypes": {
+    ".svg": "image/svg+xml"
+  }
+}

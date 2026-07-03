@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — GDPR-opplæring status · Instabank</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #00FF87;
+    --green-dim: #00CC6A;
+    --dark: #1E2530;
+    --charcoal: #44556A;
+    --orange: #F26B43;
+    --white: #FFFFFF;
+    --offwhite: #F7F9FC;
+    --light: #EEF2F8;
+    --muted: #8A96A8;
+    --border: #E4E9F2;
+    --warning: #B45309;
+    --warning-soft: #FEF3C7;
+    --radius: 12px;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'DM Sans', sans-serif; background: var(--offwhite); color: var(--dark); min-height:100vh; }
+
+  header.top {
+    background: var(--dark);
+    padding: 32px 32px 28px;
+  }
+  .hero { max-width: 1100px; margin: 0 auto; }
+  .tag {
+    display:inline-flex; align-items:center; gap:8px;
+    background: rgba(0,255,135,0.12); border:1px solid rgba(0,255,135,0.28);
+    border-radius:20px; padding:5px 14px; font-size:11px; font-weight:700;
+    letter-spacing:0.1em; text-transform:uppercase; color: var(--green); margin-bottom:14px;
+  }
+  h1 { color: var(--white); font-size: clamp(1.6rem, 3vw, 2.2rem); font-weight:700; margin-bottom:8px; }
+  header.top p { color: rgba(255,255,255,0.55); font-size:0.95rem; }
+
+  .container.single { max-width: 1100px; margin: 0 auto; padding: 28px 24px 60px; }
+
+  .admin-toolbar {
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 1rem; margin-bottom: 1.4rem;
+  }
+  .admin-stats { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .stat-card {
+    background: white; border-radius: 10px; padding: 1rem 1.4rem;
+    box-shadow: 0 2px 8px rgba(30,42,71,0.06); border-top: 3px solid var(--green); min-width: 130px;
+  }
+  .stat-card .stat-label { font-size:0.72rem; text-transform:uppercase; letter-spacing:1px; color:var(--muted); font-weight:700; }
+  .stat-card .stat-value { font-size:1.7rem; color:var(--dark); font-weight:800; margin-top:0.3rem; line-height:1; font-family:'DM Mono',monospace; }
+
+  .filter-box {
+    background: white; border: 1px solid var(--border); padding: 0.6rem 1rem;
+    border-radius: 8px; font-family: inherit; font-size: 0.95rem; min-width: 240px; color: var(--dark);
+  }
+  .csv-btn {
+    background: var(--green); color: var(--dark); border: none; padding: 0.65rem 1.2rem;
+    border-radius: 999px; font-weight: 700; cursor: pointer; font-family: inherit; font-size: 0.9rem;
+    transition: background 0.18s ease;
+  }
+  .csv-btn:hover { background: var(--green-dim); }
+
+  .users-table-wrap { background: white; border-radius: 12px; box-shadow: 0 2px 12px rgba(30,42,71,0.05); overflow: hidden; overflow-x:auto; }
+  .users-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+  .users-table th {
+    background: var(--light); color: var(--dark); text-align:left; padding: 0.85rem 0.9rem;
+    font-weight:700; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px;
+    border-bottom: 2px solid var(--border); white-space:nowrap;
+  }
+  .users-table td { padding: 0.75rem 0.9rem; border-bottom: 1px solid var(--border); color:#374151; }
+  .users-table tr:last-child td { border-bottom:none; }
+  .users-table tr:hover { background: var(--light); }
+  .module-cell { text-align:center; font-weight:600; }
+  .module-done { background:#DCFCE7; color:var(--green-dim); padding:0.18rem 0.5rem; border-radius:999px; font-size:0.78rem; }
+  .module-partial { background:#FEF3C7; color:var(--warning); padding:0.18rem 0.5rem; border-radius:999px; font-size:0.78rem; }
+  .module-pending { color: var(--muted); font-size:0.82rem; }
+  .user-cell { font-weight:600; color:var(--dark); }
+  .completion-bar { background: var(--light); border-radius:999px; height:8px; overflow:hidden; width:100px; display:inline-block; vertical-align:middle; }
+  .completion-fill { background: var(--green); height:100%; transition:width 0.3s ease; }
+  .last-active { font-size:0.82rem; color:var(--muted); }
+
+  .error-box { background: var(--warning-soft); border-left:4px solid var(--warning); padding:1rem 1.25rem; border-radius:8px; color:var(--warning); margin:1.5rem 0; }
+  .empty-state { text-align:center; padding:3rem 2rem; color:var(--muted); }
+  .empty-state h3 { color: var(--dark); margin-bottom:0.5rem; }
+  .note { font-size:0.78rem; color:var(--muted); margin-top:0.6rem; }
+
+  footer { text-align:center; padding: 24px; color: var(--muted); font-size:0.82rem; }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="hero">
+    <span class="tag">Personvernombud (DPO) · Admin</span>
+    <h1>GDPR-opplæring — status</h1>
+    <p>Oversikt over hvem som har fullført hvilken modul, og hvor langt de har kommet i hver modul.</p>
+  </div>
+</header>
+
+<div class="container single">
+  <main>
+
+    <div id="loading">Laster data…</div>
+    <div id="errorBox" class="error-box" style="display:none;"></div>
+
+    <div id="reportArea" style="display:none;">
+      <div class="admin-toolbar">
+        <div class="admin-stats">
+          <div class="stat-card">
+            <div class="stat-label">Brukere</div>
+            <div class="stat-value" id="statUsers">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Fullført alle</div>
+            <div class="stat-value" id="statCompleted">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">I gang</div>
+            <div class="stat-value" id="statInProgress">0</div>
+          </div>
+        </div>
+        <div style="display:flex; gap:0.6rem; align-items:center; flex-wrap:wrap;">
+          <input type="text" id="filterInput" class="filter-box" placeholder="Søk på e-post…">
+          <button class="csv-btn" id="csvBtn">Last ned CSV</button>
+        </div>
+      </div>
+
+      <div class="users-table-wrap">
+        <table class="users-table" id="usersTable">
+          <thead>
+            <tr>
+              <th>Ansatt</th>
+              <th>Modul 1</th>
+              <th>Modul 2</th>
+              <th>Modul 3</th>
+              <th>Modul 4</th>
+              <th>Modul 5</th>
+              <th>Fremdrift</th>
+              <th>Sist aktiv</th>
+            </tr>
+          </thead>
+          <tbody id="usersBody"></tbody>
+        </table>
+        <div id="emptyState" class="empty-state" style="display:none;">
+          <h3>Ingen data å vise</h3>
+          <p>Ingen har fullført noen del av kurset ennå.</p>
+        </div>
+      </div>
+      <p class="note">Modul-celler viser «fullført» (bestått quiz) i grønt, eller antall seksjoner besøkt («X av Y seksjoner») i gult hvis modulen er påbegynt men ikke fullført.</p>
+    </div>
+
+  </main>
+</div>
+
+<footer>Personvern &amp; GDPR-opplæring · Admin Dashboard · Instabank ASA</footer>
+
+<script>
+(function () {
+  var allUsers = [];
+  var MODULE_SECTION_COUNTS = { 1: 7, 2: 6, 3: 6, 4: 6, 5: 6 };
+
+  fetch('/api/progress?mode=admin')
+    .then(function (r) {
+      if (r.status === 401) throw new Error('Du må logge inn for å se denne siden.');
+      if (r.status === 403) throw new Error('Du har ikke gdpradmin-rollen. Be SWA-administrator om tilgang.');
+      if (!r.ok) throw new Error('Kunne ikke hente data (status ' + r.status + ').');
+      return r.json();
+    })
+    .then(function (data) {
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('reportArea').style.display = 'block';
+      allUsers = data.users || [];
+      renderTable(allUsers);
+    })
+    .catch(function (err) {
+      document.getElementById('loading').style.display = 'none';
+      var box = document.getElementById('errorBox');
+      box.textContent = err.message;
+      box.style.display = 'block';
+    });
+
+  function renderTable(users) {
+    var body = document.getElementById('usersBody');
+    body.innerHTML = '';
+    var stats = { total: users.length, completed: 0, inProgress: 0 };
+
+    if (users.length === 0) {
+      document.getElementById('emptyState').style.display = 'block';
+      updateStats(stats);
+      return;
+    }
+    document.getElementById('emptyState').style.display = 'none';
+
+    users.forEach(function (u) {
+      var modulesDone = 0;
+      var latestDate = null;
+
+      for (var p = 1; p <= 5; p++) {
+        var m = u.modules && u.modules[p];
+        if (m) {
+          modulesDone++;
+          if (m.completedAt && (!latestDate || m.completedAt > latestDate)) latestDate = m.completedAt;
+        }
+        var secs = u.sections && u.sections[p];
+        if (secs) {
+          Object.keys(secs).forEach(function (idx) {
+            var dt = secs[idx];
+            if (dt && (!latestDate || dt > latestDate)) latestDate = dt;
+          });
+        }
+      }
+      var pct = (modulesDone / 5) * 100;
+      if (modulesDone === 5) stats.completed++;
+      else if (modulesDone > 0 || hasAnySection(u)) stats.inProgress++;
+
+      var tr = document.createElement('tr');
+      tr.appendChild(cell('<span class="user-cell">' + escapeHtml(u.user) + '</span>'));
+
+      for (var pp = 1; pp <= 5; pp++) {
+        var mod = u.modules && u.modules[pp];
+        if (mod) {
+          tr.appendChild(cell('<span class="module-done">' + mod.score + ' / ' + mod.total + '</span>', 'module-cell'));
+        } else {
+          var sec = u.sections && u.sections[pp];
+          var visited = sec ? Object.keys(sec).length : 0;
+          var totalSecs = MODULE_SECTION_COUNTS[pp] || 0;
+          if (visited > 0) {
+            tr.appendChild(cell('<span class="module-partial">' + visited + ' / ' + totalSecs + ' seksj.</span>', 'module-cell'));
+          } else {
+            tr.appendChild(cell('<span class="module-pending">–</span>', 'module-cell'));
+          }
+        }
+      }
+
+      tr.appendChild(cell(
+        '<div class="completion-bar"><div class="completion-fill" style="width:' + pct + '%"></div></div>' +
+        '<div style="font-size:0.76rem; color:var(--muted); margin-top:0.2rem;">' + modulesDone + ' / 5</div>'
+      ));
+      tr.appendChild(cell('<span class="last-active">' + (latestDate ? formatDate(latestDate) : '–') + '</span>'));
+
+      body.appendChild(tr);
+    });
+
+    updateStats(stats);
+  }
+
+  function hasAnySection(u) {
+    if (!u.sections) return false;
+    return Object.keys(u.sections).some(function (k) {
+      return Object.keys(u.sections[k] || {}).length > 0;
+    });
+  }
+
+  function updateStats(stats) {
+    document.getElementById('statUsers').textContent = stats.total;
+    document.getElementById('statCompleted').textContent = stats.completed;
+    document.getElementById('statInProgress').textContent = stats.inProgress;
+  }
+
+  function cell(html, cls) {
+    var td = document.createElement('td');
+    if (cls) td.className = cls;
+    td.innerHTML = html;
+    return td;
+  }
+
+  function escapeHtml(s) {
+    if (!s) return '';
+    return String(s).replace(/[&<>"']/g, function (m) {
+      return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[m];
+    });
+  }
+
+  function formatDate(iso) {
+    try {
+      var d = new Date(iso);
+      return d.toLocaleDateString('nb-NO') + ' ' + d.toLocaleTimeString('nb-NO', { hour:'2-digit', minute:'2-digit' });
+    } catch (e) { return iso; }
+  }
+
+  document.getElementById('filterInput').addEventListener('input', function (e) {
+    var q = e.target.value.toLowerCase().trim();
+    if (!q) { renderTable(allUsers); return; }
+    var filtered = allUsers.filter(function (u) {
+      return (u.user || '').toLowerCase().indexOf(q) !== -1;
+    });
+    renderTable(filtered);
+  });
+
+  document.getElementById('csvBtn').addEventListener('click', function () {
+    var rows = [['User', 'Modul 1 score', 'Modul 1 fullført', 'Modul 2 score', 'Modul 2 fullført',
+                 'Modul 3 score', 'Modul 3 fullført', 'Modul 4 score', 'Modul 4 fullført',
+                 'Modul 5 score', 'Modul 5 fullført', 'Moduler fullført']];
+    allUsers.forEach(function (u) {
+      var row = [u.user];
+      var done = 0;
+      for (var p = 1; p <= 5; p++) {
+        var mod = u.modules && u.modules[p];
+        if (mod) {
+          row.push(mod.score + '/' + mod.total);
+          row.push(mod.completedAt || '');
+          done++;
+        } else {
+          row.push(''); row.push('');
+        }
+      }
+      row.push(done);
+      rows.push(row);
+    });
+    var csv = rows.map(function (r) {
+      return r.map(function (c) { return '"' + String(c).replace(/"/g, '""') + '"'; }).join(',');
+    }).join('\n');
+    var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'gdpr-training-' + new Date().toISOString().slice(0, 10) + '.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+})();
+</script>
+
+</body>
+</html>

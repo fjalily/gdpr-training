@@ -13,6 +13,7 @@
   },
   "routes": [
     { "route": "/admin.html", "allowedRoles": ["gdpradmin"] },
+    { "route": "/api/GetRoles", "allowedRoles": ["anonymous"] },
     { "route": "/api/*", "allowedRoles": ["authenticated"] },
     { "route": "/", "allowedRoles": ["authenticated"] },
     { "route": "/index.html", "allowedRoles": ["authenticated"] },

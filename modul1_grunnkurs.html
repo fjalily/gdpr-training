@@ -277,11 +277,12 @@
   .checklist li::before {
     content: '';
     position: absolute;
-    left: 0; top: 14px;
-    width: 16px; height: 16px;
-    border-radius: 50%;
-    background: rgba(0,255,135,0.2);
-    border: 2px solid var(--green);
+    left: 0; top: 18px;
+    width: 8px; height: 8px;
+    border-radius: 2px;
+    background: var(--green);
+    border: none;
+    transform: rotate(45deg);
   }
   .checklist li.sub {
     padding-left: 52px;
@@ -290,10 +291,12 @@
   }
   .checklist li.sub::before {
     left: 24px;
-    width: 12px; height: 12px;
-    top: 14px;
-    background: transparent;
-    border-color: var(--muted);
+    width: 6px; height: 2px;
+    top: 21px;
+    border-radius: 1px;
+    background: var(--muted);
+    border: none;
+    transform: none;
   }
   .checklist li strong { color: var(--dark); }
 
@@ -826,34 +829,4 @@ function answerQuiz(qid, chosen, correct) {
     opt.disabled = true;
     const idx = parseInt(opt.dataset.optidx);
     if(idx === correct) opt.classList.add('correct');
-    else if(idx === chosen) opt.classList.add('wrong');
-  });
-  const isCorrect = chosen === correct;
-  if(!quizScores[qid]) quizScores[qid] = {correct:0, total:0};
-  if(!quizScores[qid].answered) {
-    quizScores[qid].total++;
-    if(isCorrect) quizScores[qid].correct++;
-    quizScores[qid].answered = true;
-  }
-  const fb = document.getElementById('fb-'+qid);
-  if(fb) {
-    fb.className = 'quiz-feedback ' + (isCorrect ? 'correct-fb' : 'wrong-fb');
-  }
-}
-
-function toggleAnswer(id) {
-  const el = document.getElementById(id);
-  const btn = el.previousElementSibling;
-  if(el.classList.contains('open')) {
-    el.classList.remove('open');
-    btn.textContent = '▶ Vis fasitsvar';
-  } else {
-    el.classList.add('open');
-    btn.textContent = '▲ Skjul svar';
-  }
-}
-
-// Init
-trackSection(0);
-updateProgress();
-</script></body></html>
+    else if

@@ -848,4 +848,22 @@ function answerQuiz(qid, chosen, correct) {
     else if(idx === chosen) opt.classList.add('wrong');
   });
   const isCorrect = chosen === correct;
-  if(!quizScores[q
+  if(!quizScores[qid]) quizScores[qid] = {correct:0, total:0};
+  if(!quizScores[qid].answered) {
+    quizScores[qid].total++;
+    if(isCorrect) quizScores[qid].correct++;
+    quizScores[qid].answered = true;
+  }
+  const fb = document.getElementById('fb-'+qid);
+  if(fb) fb.className = 'quiz-feedback ' + (isCorrect ? 'correct-fb' : 'wrong-fb');
+}
+function toggleAnswer(id) {
+  const el = document.getElementById(id);
+  const btn = el.previousElementSibling;
+  if(el.classList.contains('open')) { el.classList.remove('open'); btn.textContent = '▶ Vis fasitsvar'; }
+  else { el.classList.add('open'); btn.textContent = '▲ Skjul svar'; }
+}
+trackSection(0);
+updateProgress();
+</script>
+</body></html>

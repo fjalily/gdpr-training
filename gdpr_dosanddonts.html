@@ -9,22 +9,22 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --ib-green: #00FF87;
-    --ib-green-dark: #00cc6a;
+    --ib-green: #03FF89;
+    --ib-green-dark: #00a16b;
     --ib-green-pale: #e6fff4;
     --ib-green-mid: #b3ffe0;
     --ib-dark: #2B384B;
     --ib-dark2: #333B47;
     --ib-dark3: #37424F;
-    --ib-orange: #F26B43;
-    --ib-orange-pale: #fef0eb;
-    --ib-orange-mid: #fbc7b5;
+    --ib-orange: #E61E7A;
+    --ib-orange-pale: #FDEAF2;
+    --ib-orange-mid: #F6B9D3;
     --gray-50: #F6F7F8;
     --gray-100: #EDEEF0;
     --gray-200: #D8DADD;
     --gray-500: #8B9199;
     --white: #ffffff;
-    --text: #1e2730;
+    --text: #333B47;
     --text-muted: #5a6370;
     --border: #E2E4E7;
     --radius: 10px;
@@ -85,7 +85,7 @@
     position: absolute;
     top: 0; right: 0;
     width: 320px; height: 100%;
-    background: linear-gradient(135deg, transparent 40%, rgba(0,255,135,0.06) 100%);
+    background: linear-gradient(135deg, transparent 40%, rgba(3,255,137,0.06) 100%);
     pointer-events: none;
   }
   .hero-dot-1 {
@@ -93,7 +93,7 @@
     top: -60px; right: 80px;
     width: 220px; height: 220px;
     border-radius: 50%;
-    background: rgba(0,255,135,0.04);
+    background: rgba(3,255,137,0.04);
     pointer-events: none;
   }
   .hero-inner { max-width: 960px; margin: 0 auto; position: relative; z-index: 1; }
@@ -103,8 +103,8 @@
 
   .hero-tag {
     display: inline-flex; align-items: center; gap: 7px;
-    background: rgba(0,255,135,0.12);
-    border: 1px solid rgba(0,255,135,0.25);
+    background: rgba(3,255,137,0.12);
+    border: 1px solid rgba(3,255,137,0.25);
     border-radius: 100px;
     padding: 4px 12px;
     font-size: 11px; font-weight: 500;
@@ -193,20 +193,20 @@
   .col-header.do-h {
     background: var(--ib-dark);
     color: var(--ib-green);
-    border: 1px solid rgba(0,255,135,0.2);
+    border: 1px solid rgba(3,255,137,0.2);
   }
   .col-header.dont-h {
     background: var(--ib-dark);
-    color: #ff8a75;
-    border: 1px solid rgba(242,107,67,0.25);
+    color: #F26FA3;
+    border: 1px solid rgba(230,30,122,0.25);
   }
   .ch-icon {
     width: 26px; height: 26px; border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
     font-size: 14px; font-weight: 700; flex-shrink: 0;
   }
-  .do-h .ch-icon { background: rgba(0,255,135,0.15); color: var(--ib-green); }
-  .dont-h .ch-icon { background: rgba(242,107,67,0.15); color: #ff8a75; }
+  .do-h .ch-icon { background: rgba(3,255,137,0.15); color: var(--ib-green); }
+  .dont-h .ch-icon { background: rgba(230,30,122,0.15); color: #F26FA3; }
 
   /* SECTION */
   .section { margin-bottom: 10px; }
@@ -240,7 +240,7 @@
   .item.do { border-left: 2.5px solid var(--ib-green-mid); }
   .item.do .item-bullet { background: var(--ib-green-pale); color: #007a40; border: 1.5px solid var(--ib-green-mid); }
   .item.dont { border-left: 2.5px solid var(--ib-orange-mid); }
-  .item.dont .item-bullet { background: var(--ib-orange-pale); color: #a33d20; border: 1.5px solid var(--ib-orange-mid); }
+  .item.dont .item-bullet { background: var(--ib-orange-pale); color: #8C1257; border: 1.5px solid var(--ib-orange-mid); }
 
   .item-text { font-size: 13px; color: var(--text-muted); line-height: 1.55; }
 
@@ -262,8 +262,8 @@
   .footer-text strong { color: rgba(255,255,255,0.75); font-weight: 500; }
   .footer-contact {
     display: flex; align-items: center; gap: 7px;
-    background: rgba(0,255,135,0.1);
-    border: 1px solid rgba(0,255,135,0.2);
+    background: rgba(3,255,137,0.1);
+    border: 1px solid rgba(3,255,137,0.2);
     border-radius: 8px;
     padding: 8px 14px;
     font-size: 12.5px;
@@ -272,7 +272,7 @@
     text-decoration: none;
     transition: background 0.15s;
   }
-  .footer-contact:hover { background: rgba(0,255,135,0.18); }
+  .footer-contact:hover { background: rgba(3,255,137,0.18); }
 
   @media (max-width: 640px) {
     .col-headers, .section-grid { grid-template-columns: 1fr; }
@@ -282,8 +282,8 @@
 
   /* ── COURSE TOPBAR (hjem-knapp) ── */
   .course-topbar {
-    background: #1E2530;
-    border-bottom: 2px solid #00FF87;
+    background: #333B47;
+    border-bottom: 2px solid #03FF89;
     padding: 0 24px;
     height: 52px;
     display: flex;
@@ -297,9 +297,9 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background: rgba(0,255,135,0.12);
-    border: 1px solid rgba(0,255,135,0.30);
-    color: #00FF87;
+    background: rgba(3,255,137,0.12);
+    border: 1px solid rgba(3,255,137,0.30);
+    color: #03FF89;
     padding: 7px 16px;
     border-radius: 8px;
     font-size: 13px;
@@ -307,7 +307,7 @@
     text-decoration: none;
     transition: background 0.15s;
   }
-  .course-home-btn:hover { background: rgba(0,255,135,0.22); }
+  .course-home-btn:hover { background: rgba(3,255,137,0.22); }
   .course-topbar-title {
     font-size: 13px;
     font-weight: 600;

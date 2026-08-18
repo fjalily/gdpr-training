@@ -7,18 +7,18 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --green: #00FF87;
-    --green-dim: #00CC6A;
-    --green-pale: rgba(0,255,135,0.08);
-    --dark: #1E2530;
-    --dark2: #252D3A;
-    --dark3: #2E3847;
-    --charcoal: #44556A;
-    --orange: #F26B43;
+    --green: #03FF89;
+    --green-dim: #00A16B;
+    --green-pale: rgba(3,255,137,0.08);
+    --dark: #333B47;
+    --dark2: #3A424E;
+    --dark3: #434B57;
+    --charcoal: #4B5563;
+    --orange: #E61E7A;
     --white: #FFFFFF;
-    --offwhite: #F7F9FC;
-    --light: #EEF2F8;
-    --muted: #8A96A8;
+    --offwhite: #F7F8F9;
+    --light: #F0F1F3;
+    --muted: #999DA3;
     --radius: 12px;
     --shadow: 0 4px 24px rgba(0,0,0,0.10);
   }
@@ -43,7 +43,7 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: radial-gradient(ellipse at 60% 120%, rgba(0,255,135,0.10) 0%, transparent 65%);
+    background: radial-gradient(ellipse at 60% 120%, rgba(3,255,137,0.10) 0%, transparent 65%);
     pointer-events: none;
   }
   .hero-inner {
@@ -61,8 +61,8 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background: rgba(0,255,135,0.12);
-    border: 1px solid rgba(0,255,135,0.28);
+    background: rgba(3,255,137,0.12);
+    border: 1px solid rgba(3,255,137,0.28);
     border-radius: 20px;
     padding: 5px 14px;
     font-size: 11px;
@@ -239,9 +239,9 @@
     background: var(--light);
     color: var(--charcoal);
   }
-  .badge.level { background: rgba(0,255,135,0.10); color: var(--green-dim); }
+  .badge.level { background: rgba(3,255,137,0.10); color: var(--green-dim); }
   .badge.time  { background: rgba(0,0,0,0.04); color: var(--muted); }
-  .badge.ref   { background: rgba(242,107,67,0.10); color: var(--orange); }
+  .badge.ref   { background: rgba(230,30,122,0.10); color: var(--orange); }
 
   .module-btn {
     display: inline-flex;
@@ -260,7 +260,7 @@
     color: var(--dark);
     width: fit-content;
   }
-  .module-btn:hover { background: var(--green-dim); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(0,255,135,0.30); }
+  .module-btn:hover { background: var(--green-dim); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(3,255,137,0.30); }
   .module-btn.secondary {
     background: var(--white);
     color: var(--dark);
@@ -268,7 +268,7 @@
   }
   .module-btn.secondary:hover { background: var(--offwhite); box-shadow: none; }
   .module-btn.orange-btn { background: var(--orange); color: var(--white); }
-  .module-btn.orange-btn:hover { background: #d4522e; box-shadow: 0 4px 14px rgba(242,107,67,0.30); }
+  .module-btn.orange-btn:hover { background: #C21768; box-shadow: 0 4px 14px rgba(230,30,122,0.30); }
 
   /* progress ring på knappen */
   .done .module-btn { background: var(--light); color: var(--charcoal); }
@@ -276,8 +276,8 @@
 
   /* ── INFO BOX ── */
   .info-box {
-    background: rgba(0,255,135,0.06);
-    border: 1px solid rgba(0,255,135,0.22);
+    background: rgba(3,255,137,0.06);
+    border: 1px solid rgba(3,255,137,0.22);
     border-radius: var(--radius);
     padding: 18px 22px;
     margin-bottom: 32px;
@@ -352,8 +352,8 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background: rgba(0,255,135,0.12);
-    border: 1px solid rgba(0,255,135,0.25);
+    background: rgba(3,255,137,0.12);
+    border: 1px solid rgba(3,255,137,0.25);
     color: var(--green);
     padding: 9px 16px;
     border-radius: 8px;
@@ -362,7 +362,7 @@
     text-decoration: none;
     transition: background 0.15s;
   }
-  .contact-link:hover { background: rgba(0,255,135,0.20); }
+  .contact-link:hover { background: rgba(3,255,137,0.20); }
 </style>
 </head>
 <body>
